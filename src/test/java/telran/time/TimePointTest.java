@@ -75,7 +75,7 @@ public class TimePointTest {
     public void testWithAdjusterKeepsSameTimeUnit() {
         TimePoint original = new TimePoint(60, TimeUnit.SECOND);
         TimePointAdjuster adjuster = timePoint -> new TimePoint(timePoint.getAmount()/60, TimeUnit.MINUTE);
-        TimePoint adjusted = original.with(adjuster);
+        TimePoint adjusted = original.with(adjuster).convert(secondUnit);
         assertEquals(TimeUnit.SECOND, adjusted.getTimeUnit());
         assertEquals(60, adjusted.getAmount());
     }
