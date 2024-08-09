@@ -1,15 +1,20 @@
 package telran.time;
 
 public class TimePoint implements Comparable<TimePoint>{
-    private final float amount;
-    private final TimeUnit timeUnit;
-
+    private float amount;
+    private TimeUnit timeUnit;
+    
     public TimePoint(float amount, TimeUnit timeUnit) {
         this.amount = amount;
         this.timeUnit = timeUnit;
     }
 
-    public float getAmount() {
+    @Override
+    public int compareTo(TimePoint arg0) {
+        return Float.compare(this.inSeconds(), arg0.inSeconds());     
+    }
+
+    public float getAmount(){
         return amount;
     }
 
@@ -17,36 +22,23 @@ public class TimePoint implements Comparable<TimePoint>{
         return timeUnit;
     }
 
-    private float convertToMilli() {
-        return amount * timeUnit.getValueOfMilli();
-    }
-
-    @Override
-    public int compareTo(TimePoint o) {
-        return Float.compare(this.convertToMilli(), o.convertToMilli());
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
         TimePoint other = (TimePoint) obj;
-        return convertToMilli() == other.convertToMilli();
+        return this.compareTo(other) == 0;
     }
 
-    @Override
-    public int hashCode() {
-        return Float.hashCode(convertToMilli());
-    }
-
-    public static TimePoint convert(TimePoint point, TimeUnit newUnit) {
-        float milliAmount = point.convertToMilli();
-        float newAmount = milliAmount / newUnit.getValueOfMilli();
-        return new TimePoint(newAmount, newUnit);
+    public TimePoint convert(TimeUnit newTimeUnit) {
+        float amountInNewUnit = this.inSeconds() / newTimeUnit.getValueOfSeconds();
+        return new TimePoint(amountInNewUnit, newTimeUnit);
     }
 
     public TimePoint with(TimePointAdjuster adjuster) {
         return adjuster.adjust(this);
+    }
+
+    private float inSeconds() {
+        return amount * timeUnit.getValueOfSeconds();
     }
 
 }

@@ -1,55 +1,74 @@
 package telran.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class TimePointTest {
 
-    @Test
-    public void testConstructor() {
-        TimePoint point = new TimePoint(5, TimeUnit.MINUTE);
-        assertEquals(5, point.getAmount());
-        assertEquals(TimeUnit.MINUTE, point.getTimeUnit());
+    private TimePoint timePointSeconds;
+    private TimePoint timePointMinutes;
+    private TimePoint timePointHours;
+    private TimeUnit secondUnit;
+    private TimeUnit minuteUnit;
+    private TimeUnit hourUnit;
+
+    @BeforeEach
+    public void setUp() {
+        secondUnit = TimeUnit.SECOND;
+        minuteUnit = TimeUnit.MINUTE;
+        hourUnit = TimeUnit.HOUR;
+
+        timePointSeconds = new TimePoint(120, secondUnit);
+        timePointMinutes = new TimePoint(2, minuteUnit);
+        timePointHours = new TimePoint(1, hourUnit);
     }
 
     @Test
-    public void testConvert() {
-        TimePoint point = new TimePoint(1, TimeUnit.HOUR);
-        TimePoint convertedPoint = TimePoint.convert(point, TimeUnit.MINUTE);
-        assertEquals(60, convertedPoint.getAmount());
-        assertEquals(TimeUnit.MINUTE, convertedPoint.getTimeUnit());
+    public void testConvertToSeconds() {
+        TimePoint result = timePointMinutes.convert(secondUnit);
+        assertEquals(120, result.getAmount());
+        assertEquals(secondUnit, result.getTimeUnit());
     }
 
     @Test
-    public void testWith() {
-        TimePoint point = new TimePoint(5, TimeUnit.MINUTE);
-        TimePointAdjuster adjuster = tp -> new TimePoint(tp.getAmount() + 10, tp.getTimeUnit());
-        TimePoint adjustedPoint = point.with(adjuster);
-        assertEquals(15, adjustedPoint.getAmount());
-        assertEquals(TimeUnit.MINUTE, adjustedPoint.getTimeUnit());
+    public void testConvertToMinutes() {
+        TimePoint result = timePointSeconds.convert(minuteUnit);
+        assertEquals(2, result.getAmount());
+        assertEquals(minuteUnit, result.getTimeUnit());
     }
 
     @Test
-    public void testEquals() {
-        TimePoint point1 = new TimePoint(5, TimeUnit.MINUTE);
-        TimePoint point2 = new TimePoint(5, TimeUnit.MINUTE);
-        TimePoint point3 = new TimePoint(1, TimeUnit.HOUR);
-        assertEquals(point1, point2);
-        assertNotEquals(point1, point3);
+    public void testConvertToHours() {
+        TimePoint result = timePointSeconds.convert(minuteUnit);
+        assertEquals(2, result.getAmount());
+        assertEquals(minuteUnit, result.getTimeUnit());
     }
 
     @Test
     public void testCompareTo() {
-        TimePoint point1 = new TimePoint(5, TimeUnit.MINUTE);
-        TimePoint point2 = new TimePoint(1, TimeUnit.HOUR);
-        TimePoint point3 = new TimePoint(5, TimeUnit.MINUTE);
-
-        assertTrue(point1.compareTo(point2) < 0);
-        assertTrue(point1.compareTo(point3) == 0);
-        assertTrue(point2.compareTo(point1) > 0);
+        TimePoint otherPoint = new TimePoint(1, hourUnit); // 1 час
+        assertFalse(timePointSeconds.compareTo(otherPoint) > 0);
+        assertTrue(timePointMinutes.compareTo(timePointSeconds) == 0);
+        assertFalse(timePointHours.compareTo(timePointMinutes) < 0);
     }
 
+    @Test
+    public void testEquals() {
+        TimePoint samePoint = new TimePoint(120, secondUnit);
+        assertTrue(timePointSeconds.equals(samePoint));
+
+        TimePoint differentPoint = new TimePoint(60, secondUnit);
+        assertFalse(timePointSeconds.equals(differentPoint));
+    }
+
+    @Test
+    public void testWithAdjuster() {
+        TimePointAdjuster adjuster = new PlusTimePointAdjuster(10, secondUnit);
+        TimePoint result = timePointSeconds.with(adjuster);
+        assertEquals(130, result.getAmount());
+        assertEquals(secondUnit, result.getTimeUnit());
+    }
 }
