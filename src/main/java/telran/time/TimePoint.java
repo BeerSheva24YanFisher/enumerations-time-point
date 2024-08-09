@@ -34,8 +34,7 @@ public class TimePoint implements Comparable<TimePoint>{
     }
 
     public TimePoint with(TimePointAdjuster adjuster) {
-        TimePoint adjusted = adjuster.adjust(this);
-        return this.getTimeUnit() != adjusted.getTimeUnit() ? adjusted.convert(this.getTimeUnit()) : adjusted;
+        return adjuster.adjust(this);
     }
 
     private float inSeconds() {

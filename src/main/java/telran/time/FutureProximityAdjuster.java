@@ -24,6 +24,6 @@ public class FutureProximityAdjuster implements TimePointAdjuster {
                 start = middle + 1;
             }
         }
-        return resultIndex != -1  ? timePoints[resultIndex] : null;
+        return resultIndex != -1  ? timePoints[resultIndex].convert(timePoint.getTimeUnit()) : null;
     }
 }
