@@ -59,7 +59,6 @@ public class TimePointTest {
     public void testEquals() {
         TimePoint samePoint = new TimePoint(120, secondUnit);
         assertTrue(timePointSeconds.equals(samePoint));
-
         TimePoint differentPoint = new TimePoint(60, secondUnit);
         assertFalse(timePointSeconds.equals(differentPoint));
     }
@@ -70,5 +69,16 @@ public class TimePointTest {
         TimePoint result = timePointSeconds.with(adjuster);
         assertEquals(130, result.getAmount());
         assertEquals(secondUnit, result.getTimeUnit());
+    }
+
+    @Test
+    public void testBetween_SameUnits() {
+        TimePoint start = new TimePoint(1, secondUnit);
+        TimePoint end = new TimePoint(3, secondUnit);
+        assertEquals(2.0, secondUnit.between(start, end), 0.001);
+
+        start = new TimePoint(1, minuteUnit);
+        end = new TimePoint(20, secondUnit);
+        assertEquals(-40.0, secondUnit.between(start, end), 0.001);
     }
 }
