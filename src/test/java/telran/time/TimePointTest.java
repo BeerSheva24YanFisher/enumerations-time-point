@@ -72,6 +72,16 @@ public class TimePointTest {
     }
 
     @Test
+    public void testWithAdjusterKeepsSameTimeUnit() {
+        TimePoint original = new TimePoint(60, TimeUnit.SECOND);
+        TimePointAdjuster adjuster = timePoint -> new TimePoint(timePoint.getAmount()/60, TimeUnit.MINUTE);
+        TimePoint adjusted = original.with(adjuster);
+        assertEquals(TimeUnit.SECOND, adjusted.getTimeUnit());
+        assertEquals(60, adjusted.getAmount());
+    }
+
+
+    @Test
     public void testBetween_SameUnits() {
         TimePoint start = new TimePoint(1, secondUnit);
         TimePoint end = new TimePoint(3, secondUnit);

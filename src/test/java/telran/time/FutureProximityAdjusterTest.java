@@ -15,6 +15,9 @@ public class FutureProximityAdjusterTest {
     public void setUp() {
         // Инициализация массива timePoints
         timePoints = new TimePoint[] {
+            new TimePoint(0, TimeUnit.SECOND),
+            new TimePoint(0, TimeUnit.SECOND),
+            new TimePoint(1, TimeUnit.SECOND),
             new TimePoint(1, TimeUnit.SECOND),
             new TimePoint(5, TimeUnit.SECOND),
             new TimePoint(10, TimeUnit.SECOND),
